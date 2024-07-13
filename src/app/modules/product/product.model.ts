@@ -1,5 +1,5 @@
 import { model, Schema } from "mongoose";
-import { IProduct } from "./product.inteface";
+import { IProduct } from "./product.interface";
 
 
 
