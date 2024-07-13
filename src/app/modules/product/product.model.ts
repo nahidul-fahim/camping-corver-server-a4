@@ -47,5 +47,16 @@ const productSchema = new Schema<IProduct>({
 );
 
 
+// pre middleware to exclude isDeleted products
+productSchema.pre('find', function (next) {
+    this.find({ isDeleted: { $ne: true } });
+    next()
+})
+productSchema.pre('findOne', function (next) {
+    this.find({ isDeleted: { $ne: true } });
+    next()
+})
+
+
 
 export const Product = model<IProduct>('Product', productSchema)
