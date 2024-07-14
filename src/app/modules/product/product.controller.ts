@@ -21,7 +21,8 @@ const createProduct = catchAsync(async (req, res) => {
 
 // get all products controller
 const getAllProducts = catchAsync(async (req, res) => {
-    const result = await ProductServices.getAllProducts();
+    console.log("Query from all products =>", req.query)
+    const result = await ProductServices.getAllProducts(req.query);
 
     sendResponse(res, {
         statusCode: httpStatus.OK,
