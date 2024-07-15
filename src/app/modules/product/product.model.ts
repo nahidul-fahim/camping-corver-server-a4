@@ -56,6 +56,10 @@ productSchema.pre('findOne', function (next) {
     this.find({ isDeleted: { $ne: true } });
     next()
 })
+productSchema.pre('findOneAndUpdate', function (next) {
+    this.find({ isDeleted: { $ne: true } });
+    next()
+})
 
 
 

@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-
+// validation schema for creating product
 const createProductValidationSchema = z.object({
     body: z.object({
         name: z.string({
@@ -31,5 +31,33 @@ const createProductValidationSchema = z.object({
 });
 
 
+// validation schema for updating product
+const updateProductValidationSchema = z.object({
+    body: z.object({
+        name: z.string({
+            invalid_type_error: "Product name must be a string"
+        }).optional(),
+        price: z.number({
+            invalid_type_error: "Product price must be a number"
+        }).positive({ message: "Price must be a positive number" }).optional(),
+        quantity: z.number({
+            invalid_type_error: "Product quantity must be a number"
+        }).int({ message: "Quantity must be an integer" }).nonnegative({ message: "Quantity cannot be negative" }).optional(),
+        description: z.string({
+            invalid_type_error: "Description must be a string"
+        }).optional(),
+        category: z.string({
+            invalid_type_error: "Category must be a string"
+        }).optional(),
+        images: z.string({
+            invalid_type_error: "Images must be a string"
+        }).optional(),
+    })
+});
 
-export const ProductValidation = { createProductValidationSchema }
+
+
+export const ProductValidation = {
+    createProductValidationSchema,
+    updateProductValidationSchema
+}

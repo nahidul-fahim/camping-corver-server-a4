@@ -40,10 +40,34 @@ const getSingleProduct = async (id: string) => {
 }
 
 
+// update product data
+const updateProductIntoDb = async (payload: Partial<IProduct>, id: string) => {
+    const result = await Product.findByIdAndUpdate(id, payload, {
+        new: true,
+        runValidators: true
+    });
+
+    return result;
+}
+
+
+// delete a product
+const deleteProductFromDb = async (id: string) => {
+    const result = await Product.findByIdAndUpdate(id, { isDeleted: true }, {
+        new: true,
+        runValidators: true
+    })
+
+    return result;
+}
+
+
 
 
 export const ProductServices = {
     createNewProductIntoDb,
     getAllProducts,
-    getSingleProduct
+    getSingleProduct,
+    updateProductIntoDb,
+    deleteProductFromDb
 }
