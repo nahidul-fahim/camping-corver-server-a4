@@ -32,12 +32,25 @@ class QueryBuilder<T> {
         const queryObj = { ...this.query };
 
         // exclude fields
-        const excludedFields = ["searchTerm", "sort"];
+        const excludedFields = ["searchTerm", "sort", "minPrice", "maxPrice"];
         // delete the excluded fields from new object
         excludedFields.forEach((el) => delete queryObj[el])
 
-        console.log("New query object =>", queryObj)
+        const priceFilter: Record<string, unknown> = {}
+        // checking if there is minPrice or maxPrice added in the query
+        if (this.query.minPrice) {
+            priceFilter.$gte = Number(this.query.minPrice);
+        }
+        if (this.query.maxPrice) {
+            priceFilter.$lte = Number(this.query.maxPrice);
+        }
 
+        // if minPrice and maxPrice added, then adding the 'price' object to the new queryObj
+        if (Object.keys(priceFilter).length > 0) {
+            queryObj["price"] = priceFilter;
+        }
+
+        // finding based on filters
         this.modelQuery = this.modelQuery.find(queryObj as FilterQuery<T>)
 
         return this;
