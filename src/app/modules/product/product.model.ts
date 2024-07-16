@@ -1,9 +1,11 @@
 import { model, Schema } from "mongoose";
-import { IProduct } from "./product.interface";
+import { IProduct, ProductModel } from "./product.interface";
+import httpStatus from "http-status";
+import AppError from "../../error/AppError";
 
 
 
-const productSchema = new Schema<IProduct>({
+const productSchema = new Schema<IProduct, ProductModel>({
     name: {
         type: String,
         required: [true, "Product name is required"],
@@ -56,11 +58,17 @@ productSchema.pre('findOne', function (next) {
     this.find({ isDeleted: { $ne: true } });
     next()
 })
-productSchema.pre('findOneAndUpdate', function (next) {
-    this.find({ isDeleted: { $ne: true } });
-    next()
-})
+
+
+// checking if the product exists in the db
+productSchema.statics.isProductExists = async function (id: string) {
+    const existingProduct = await Product.findById(id);
+    if (!existingProduct) {
+        throw new AppError(httpStatus.NOT_FOUND, "Product doesn't exist!")
+    }
+    return existingProduct;
+}
 
 
 
-export const Product = model<IProduct>('Product', productSchema)
+export const Product = model<IProduct, ProductModel>('Product', productSchema)

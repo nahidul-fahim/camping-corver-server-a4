@@ -42,6 +42,9 @@ const getSingleProduct = async (id: string) => {
 
 // update product data
 const updateProductIntoDb = async (payload: Partial<IProduct>, id: string) => {
+    // checking if the product exist
+    await Product.isProductExists(id)
+
     const result = await Product.findByIdAndUpdate(id, payload, {
         new: true,
         runValidators: true
@@ -53,6 +56,9 @@ const updateProductIntoDb = async (payload: Partial<IProduct>, id: string) => {
 
 // delete a product
 const deleteProductFromDb = async (id: string) => {
+    // checking if the product exist
+    await Product.isProductExists(id)
+
     const result = await Product.findByIdAndUpdate(id, { isDeleted: true }, {
         new: true,
         runValidators: true
