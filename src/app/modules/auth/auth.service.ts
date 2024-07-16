@@ -19,8 +19,6 @@ const signInUser = async (payload: ISignInUser) => {
         throw new AppError(httpStatus.FORBIDDEN, "Password is incorrect!")
     }
 
-    console.log("User from auth service =>", user)
-
     const { password, ...others } = user.toObject();
     return { others };
 }
