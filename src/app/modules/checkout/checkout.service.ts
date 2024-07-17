@@ -22,7 +22,7 @@ const newCheckoutIntoDb = async (payload: ICheckout) => {
 
     const session = await mongoose.startSession();
 
-    try {G
+    try {
         session.startTransaction();
         console.log("Cart products =>", cartProducts)
 
