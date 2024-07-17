@@ -15,13 +15,15 @@ const cartSchema = new Schema<ICart>({
     },
     quantity: {
         type: Number,
-        required: [true, "Quantity is required"]
+        required: [true, "Quantity is required"],
+        min: [1, "Quantity must be at least 1"]
     },
-    date: {
-        type: String,
-        required: [true, "Date is required"]
+},
+    {
+        timestamps: true,
+        versionKey: false
     }
-});
+);
 
 
 export const Cart = model<ICart>('Cart', cartSchema)
