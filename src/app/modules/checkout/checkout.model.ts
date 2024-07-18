@@ -43,7 +43,12 @@ const checkoutSchema = new Schema<ICheckout>({
         required: true,
         validate: [(val: ICartProducts[]) => val.length > 0, '{PATH} must have at least one product']
     }
-})
+},
+    {
+        timestamps: true,
+        versionKey: false
+    }
+)
 
 
 export const Checkout = model<ICheckout>('Checkout', checkoutSchema);

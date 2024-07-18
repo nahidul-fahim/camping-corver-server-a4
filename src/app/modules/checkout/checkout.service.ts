@@ -24,12 +24,12 @@ const newCheckoutIntoDb = async (payload: ICheckout) => {
 
     try {
         session.startTransaction();
-        console.log("Cart products =>", cartProducts)
 
-        // TODO: NEED TO SOLVE HERE
-
-        const updatedProduct = cartProducts?.map(async (item) => {
+        const updatedProducts = cartProducts?.map(async (item) => {
             const product = await Product.findById(item.product);
+            if ((product?.quantity as number) < item?.quantity) {
+                throw new AppError(httpStatus.NOT_ACCEPTABLE, "Insufficient product quantity available!")
+            }
             const newQuantity = (product?.quantity as number) - item?.quantity;
             await Product.findByIdAndUpdate(
                 item.product,
@@ -42,7 +42,7 @@ const newCheckoutIntoDb = async (payload: ICheckout) => {
             );
         });
 
-        console.log("Updated product =>", updatedProduct)
+        await Promise.all(updatedProducts);
 
         const result = await Checkout.create([payload], { session });
         await session.commitTransaction();
@@ -52,7 +52,7 @@ const newCheckoutIntoDb = async (payload: ICheckout) => {
     catch (error) {
         await session.abortTransaction();
         await session.endSession();
-        throw new AppError(httpStatus.NOT_FOUND, "Checkout failed!")
+        throw new AppError(httpStatus.INTERNAL_SERVER_ERROR, "Checkout failed!")
     }
 }
 
