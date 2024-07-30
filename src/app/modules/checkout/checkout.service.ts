@@ -7,8 +7,6 @@ import httpStatus from "http-status";
 import { User } from "../user/user.model";
 
 
-
-
 // create new checkout
 const newCheckoutIntoDb = async (payload: ICheckout) => {
     const { cartProducts, userId } = payload;
