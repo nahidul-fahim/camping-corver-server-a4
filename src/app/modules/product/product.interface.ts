@@ -6,7 +6,7 @@ export interface IProduct {
     quantity: number;
     description: string;
     category: string;
-    images: string;
+    image: string;
     isDeleted: boolean;
 }
 

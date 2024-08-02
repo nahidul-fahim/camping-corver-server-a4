@@ -31,9 +31,9 @@ const productSchema = new Schema<IProduct, ProductModel>({
         required: [true, "Product category is required"],
         trim: true,
     },
-    images: {
+    image: {
         type: String,
-        required: [true, "Product images are required"],
+        required: [true, "Product image is required"],
         trim: true,
     },
     isDeleted: {

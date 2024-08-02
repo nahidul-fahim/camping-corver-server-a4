@@ -7,8 +7,7 @@ import { ProductServices } from "./product.service";
 // create product controller
 const createProduct = catchAsync(async (req, res) => {
     const productData = req.body;
-
-    const result = await ProductServices.createNewProductIntoDb(productData);
+    const result = await ProductServices.createNewProductIntoDb(req.file, productData);
 
     sendResponse(res, {
         statusCode: httpStatus.CREATED,

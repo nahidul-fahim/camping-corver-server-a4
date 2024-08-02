@@ -23,10 +23,6 @@ const createProductValidationSchema = z.object({
             invalid_type_error: "Category must be a string",
             required_error: "Category is required"
         }),
-        images: z.string({
-            invalid_type_error: "Images must be a string",
-            required_error: "Images are required"
-        }),
     })
 });
 
