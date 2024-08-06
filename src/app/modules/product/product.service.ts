@@ -11,6 +11,10 @@ import { sendImageToCloudinary } from "../../utils/sendImageToCloudinary";
 // create new product data
 const createNewProductIntoDb = async (file: any, payload: IProduct) => {
 
+    if (!file || !file.path) {
+        throw new AppError(httpStatus.BAD_REQUEST, "Product image is required and must have a valid path");
+    }
+
     // get the product name
     const imageName = `${payload?.name.split(' ').join('')}${Date.now()}`;
     // send image to cloudinary
@@ -79,8 +83,6 @@ const deleteProductFromDb = async (id: string) => {
 
     return result;
 }
-
-
 
 
 export const ProductServices = {

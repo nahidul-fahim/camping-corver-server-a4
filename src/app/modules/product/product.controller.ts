@@ -7,6 +7,7 @@ import { ProductServices } from "./product.service";
 // create product controller
 const createProduct = catchAsync(async (req, res) => {
     const productData = req.body;
+    // Log the file object to see what's being received
     const result = await ProductServices.createNewProductIntoDb(req.file, productData);
 
     sendResponse(res, {

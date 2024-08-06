@@ -16,7 +16,7 @@ export const sendImageToCloudinary = async (imageName: string, path: string) => 
     const uploadedImage = await cloudinary.uploader
         .upload(
             path,
-            { public_id: imageName, }
+            { public_id: imageName }
         )
         .catch((error) => {
             console.log(error);
@@ -44,4 +44,4 @@ const storage = multer.diskStorage({
     }
 })
 
-export const upload = multer({ storage: storage })
+export const upload = multer({ storage: storage });
