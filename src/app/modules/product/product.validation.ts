@@ -35,19 +35,23 @@ const updateProductValidationSchema = z.object({
         }).optional(),
         price: z.number({
             invalid_type_error: "Product price must be a number"
-        }).positive({ message: "Price must be a positive number" }).optional(),
+        })
+            .positive({ message: "Price must be a positive number" })
+            .optional(),
         quantity: z.number({
             invalid_type_error: "Product quantity must be a number"
-        }).int({ message: "Quantity must be an integer" }).nonnegative({ message: "Quantity cannot be negative" }).optional(),
+        })
+            .int({ message: "Quantity must be an integer" })
+            .nonnegative({ message: "Quantity cannot be negative" })
+            .optional(),
         description: z.string({
             invalid_type_error: "Description must be a string"
-        }).optional(),
+        })
+            .optional(),
         category: z.string({
             invalid_type_error: "Category must be a string"
-        }).optional(),
-        images: z.string({
-            invalid_type_error: "Images must be a string"
-        }).optional(),
+        })
+            .optional(),
     })
 });
 

@@ -31,9 +31,14 @@ router.get(
     ProductControllers.getSingleProduct
 )
 
-// update product
+// Update product
 router.patch(
     "/:id",
+    upload.single('file'),
+    (req: Request, res: Response, next: NextFunction) => {
+        req.body = JSON.parse(req.body.data);
+        next();
+    },
     validateRequest(ProductValidation.updateProductValidationSchema),
     ProductControllers.updateProduct
 )

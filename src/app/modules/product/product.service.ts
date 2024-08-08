@@ -57,10 +57,22 @@ const getSingleProduct = async (id: string) => {
 }
 
 
-// update product data
-const updateProductIntoDb = async (payload: Partial<IProduct>, id: string) => {
-    // checking if the product exist
-    await Product.isProductExists(id)
+// Update product data
+const updateProductIntoDb = async (file: any, payload: Partial<IProduct>, id: string) => {
+    // Checking if the product exists
+    await Product.isProductExists(id);
+
+    if (file && file.path) {
+        // Get the new image name
+        const imageName = `${payload?.name?.split(' ').join('')}${Date.now()}`;
+        // Upload the new image to Cloudinary
+        const image = await sendImageToCloudinary(imageName, file.path);
+        if (!image) {
+            throw new AppError(httpStatus.INTERNAL_SERVER_ERROR, "Please try again!");
+        }
+        // Update the payload with the new image URL
+        payload.image = image?.secure_url as string;
+    }
 
     const result = await Product.findByIdAndUpdate(id, payload, {
         new: true,
@@ -68,7 +80,8 @@ const updateProductIntoDb = async (payload: Partial<IProduct>, id: string) => {
     });
 
     return result;
-}
+};
+
 
 
 // delete a product
