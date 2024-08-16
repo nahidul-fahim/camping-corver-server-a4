@@ -15,6 +15,16 @@ const createNewProductIntoDb = async (file: any, payload: IProduct) => {
         throw new AppError(httpStatus.BAD_REQUEST, "Product image is required and must have a valid path");
     }
 
+    // checking if the product name already exists
+    const existingName = await Product.findOne({ name: { $regex: new RegExp(`^${payload?.name}$`, 'i') } });
+    if (existingName) {
+        throw new AppError(httpStatus.CONFLICT, "Product name already exists!")
+    };
+
+    // slug for the product
+    const slug = payload?.name.split(' ').join('-').toLowerCase();
+    payload.slug = slug;
+
     // get the product name
     const imageName = `${payload?.name.split(' ').join('')}${Date.now()}`;
     // send image to cloudinary

@@ -40,6 +40,10 @@ const productSchema = new Schema<IProduct, ProductModel>({
         type: Boolean,
         required: true,
         default: false,
+    },
+    slug: {
+        type: String,
+        required: true,
     }
 },
     {
