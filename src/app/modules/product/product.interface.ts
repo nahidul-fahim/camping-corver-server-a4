@@ -9,6 +9,7 @@ export interface IProduct {
     image: string;
     isDeleted: boolean;
     slug: string;
+    rating: number;
 }
 
 export interface ProductModel extends Model<IProduct> {

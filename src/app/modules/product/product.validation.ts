@@ -23,6 +23,10 @@ const createProductValidationSchema = z.object({
             invalid_type_error: "Category must be a string",
             required_error: "Category is required"
         }),
+        rating: z.number({
+            invalid_type_error: "Rating must be a number",
+            required_error: "Rating is required"
+        }),
     })
 });
 
@@ -46,12 +50,14 @@ const updateProductValidationSchema = z.object({
             .optional(),
         description: z.string({
             invalid_type_error: "Description must be a string"
-        })
-            .optional(),
+        }).optional(),
         category: z.string({
             invalid_type_error: "Category must be a string"
-        })
-            .optional(),
+        }).optional(),
+        rating: z.number({
+            invalid_type_error: "Rating must be a number",
+            required_error: "Rating is required"
+        }).optional(),
     })
 });
 
