@@ -78,5 +78,4 @@ productSchema.statics.isProductExists = async function (id: string) {
 }
 
 
-
 export const Product = model<IProduct, ProductModel>('Product', productSchema)

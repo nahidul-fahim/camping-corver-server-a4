@@ -66,6 +66,7 @@ const getSingleProduct = async (id: string) => {
 
 // Update product data
 const updateProductIntoDb = async (file: any, payload: Partial<IProduct>, id: string) => {
+
     // Checking if the product exists
     await Product.isProductExists(id);
 
