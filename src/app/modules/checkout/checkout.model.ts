@@ -3,6 +3,11 @@ import { ICartProducts, ICheckout } from "./checkout.interface";
 
 
 const cartProductSchema = new Schema<ICartProducts>({
+    cartId: {
+        type: Schema.Types.ObjectId,
+        required: [true, "Cart Id is required!"],
+        ref: "Cart"
+    },
     product: {
         type: Schema.Types.ObjectId,
         required: [true, "Product is required!"],

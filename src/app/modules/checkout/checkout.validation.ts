@@ -1,6 +1,10 @@
 import { z } from "zod";
 
 const cartProductValidationSchema = z.object({
+    cartId: z.string({
+        invalid_type_error: "Cart ID must be a string",
+        required_error: "Cart ID is required"
+    }),
     product: z.string({
         invalid_type_error: "Product ID must be a string",
         required_error: "Product ID is required"
@@ -36,7 +40,7 @@ const checkoutValidationSchema = z.object({
         cartProducts: z.array(cartProductValidationSchema, {
             invalid_type_error: "Cart products must be an array",
             required_error: "Cart products are required"
-        }).min(1, { message: "CartProducts must have at least one product" })
+        }).min(1, { message: "Cart must have at least one product" })
     })
 });
 

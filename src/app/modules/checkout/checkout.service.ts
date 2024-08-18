@@ -5,6 +5,7 @@ import { Checkout } from "./checkout.model";
 import AppError from "../../error/AppError";
 import httpStatus from "http-status";
 import { User } from "../user/user.model";
+import { Cart } from "../cart/cart.model";
 
 
 // create new checkout
@@ -38,6 +39,8 @@ const newCheckoutIntoDb = async (payload: ICheckout) => {
                     session
                 }
             );
+            // delete products from cart after check out
+            await Cart.findByIdAndDelete(item.cartId, { session });
         });
 
         await Promise.all(updatedProducts);
@@ -50,10 +53,10 @@ const newCheckoutIntoDb = async (payload: ICheckout) => {
     catch (error) {
         await session.abortTransaction();
         await session.endSession();
-        throw new AppError(httpStatus.INTERNAL_SERVER_ERROR, "Checkout failed!")
+        const err = error as Error;
+        throw new AppError(httpStatus.INTERNAL_SERVER_ERROR, `Checkout failed! ${err.message}`);
     }
-}
-
+};
 
 
 export const CheckoutService = { newCheckoutIntoDb }
