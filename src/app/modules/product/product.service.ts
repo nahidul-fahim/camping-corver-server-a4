@@ -48,7 +48,13 @@ const getAllProducts = async (query: Record<string, unknown>) => {
         .filter()
         .sort()
 
-    const result = await productQuery.modelQuery;
+    const products = await productQuery.modelQuery;
+
+    const allCategories = (await Product.find()).map((product) => product?.category);
+    const uniqueCategories = allCategories?.filter((item: string, index: number) =>
+        allCategories.indexOf(item) === index);
+
+    const result = { products, uniqueCategories }
 
     return result;
 }
