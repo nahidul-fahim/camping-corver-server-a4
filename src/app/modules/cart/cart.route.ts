@@ -12,6 +12,12 @@ router.post(
     CartController.newCart
 )
 
+// get cart products for user
+router.get(
+    "/:id",
+    CartController.userCartItem
+)
+
 
 // remove cart item
 router.delete(

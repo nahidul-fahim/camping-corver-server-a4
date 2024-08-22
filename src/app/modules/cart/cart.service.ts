@@ -29,6 +29,13 @@ const newCartIntoDb = async (payload: ICart) => {
 };
 
 
+// get cart item for user
+const getUserCartItem = async (id: string) => {
+    const result = await Cart.find({ user: id });
+    return result;
+}
+
+
 // remove cart item
 const deleteCartFromDb = async (id: string) => {
     const existingCart = await Cart.findById(id);
@@ -41,5 +48,6 @@ const deleteCartFromDb = async (id: string) => {
 
 export const CartService = {
     newCartIntoDb,
+    getUserCartItem,
     deleteCartFromDb
 };
