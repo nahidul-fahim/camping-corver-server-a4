@@ -31,7 +31,7 @@ const newCartIntoDb = async (payload: ICart) => {
 
 // get cart item for user
 const getUserCartItem = async (id: string) => {
-    const result = await Cart.find({ user: id });
+    const result = await Cart.find({ user: id }).populate("product");
     return result;
 }
 
