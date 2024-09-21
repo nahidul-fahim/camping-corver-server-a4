@@ -1,7 +1,8 @@
 import { v2 as cloudinary } from 'cloudinary';
 import config from '../config';
 import multer from 'multer';
-import fs from 'fs';
+import { Request, Response, NextFunction } from 'express';
+import { UploadApiResponse } from 'cloudinary';
 
 // Configuration
 cloudinary.config({
@@ -10,38 +11,30 @@ cloudinary.config({
     api_secret: config.cloudinary_secret_key
 });
 
-export const sendImageToCloudinary = async (imageName: string, path: string) => {
-
-    // Upload an image
-    const uploadedImage = await cloudinary.uploader
-        .upload(
-            path,
-            { public_id: imageName }
-        )
-        .catch((error) => {
-            console.log(error);
-        });
-    // delete the temporarily uploaded image
-    fs.unlink(path, (err) => {
-        if (err) {
-            console.error(err);
-        } else {
-            console.log('File is deleted.');
-        }
-    });
-    return uploadedImage;
-};
-
-
-// parse file using multer
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, process.cwd() + '/uploads/')
-    },
-    filename: function (req, file, cb) {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
-        cb(null, file.fieldname + '-' + uniqueSuffix)
-    }
-})
-
+// Multer memory storage
+const storage = multer.memoryStorage();
 export const upload = multer({ storage: storage });
+
+export const sendImageToCloudinary = async (req: Request, res: Response, next: NextFunction) => {
+    if (!req.file) {
+        return next();
+    }
+
+    try {
+        // Convert buffer to Base64
+        const base64Image = req.file.buffer.toString('base64');
+        const dataURI = `data:${req.file.mimetype};base64,${base64Image}`;
+
+        // Upload image to Cloudinary
+        const uploadedImage: UploadApiResponse = await cloudinary.uploader.upload(dataURI, {
+            resource_type: 'auto',
+            public_id: `${Date.now()}-${req.file.originalname}`
+        });
+
+        // Attach the Cloudinary response to the request object
+        req.cloudinaryResult = uploadedImage;
+        next();
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to upload image' });
+    }
+};

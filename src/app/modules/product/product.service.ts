@@ -5,39 +5,31 @@ import { IProduct } from "./product.interface";
 import { Product } from "./product.model";
 import QueryBuilder from "../../builder/QueryBuilder";
 import { searchableFields } from "./product.constant";
-import { sendImageToCloudinary } from "../../utils/sendImageToCloudinary";
+// import { sendImageToCloudinary } from "../../utils/sendImageToCloudinary";
 
 
 // create new product data
-const createNewProductIntoDb = async (file: any, payload: IProduct) => {
-
-    if (!file || !file.path) {
-        throw new AppError(httpStatus.BAD_REQUEST, "Product image is required and must have a valid path");
+const createNewProductIntoDb = async (cloudinaryResult: any, payload: IProduct) => {
+    if (!cloudinaryResult || !cloudinaryResult.secure_url) {
+        throw new AppError(httpStatus.BAD_REQUEST, "Product image upload failed");
     }
 
     // checking if the product name already exists
     const existingName = await Product.findOne({ name: { $regex: new RegExp(`^${payload?.name}$`, 'i') } });
     if (existingName) {
-        throw new AppError(httpStatus.CONFLICT, "Product name already exists!")
-    };
+        throw new AppError(httpStatus.CONFLICT, "Product name already exists!");
+    }
 
     // slug for the product
     const slug = payload?.name.split(' ').join('-').toLowerCase();
     payload.slug = slug;
 
-    // get the product name
-    const imageName = `${payload?.name.split(' ').join('')}${Date.now()}`;
-    // send image to cloudinary
-    const image = await sendImageToCloudinary(imageName, file?.path);
-    if (!image) {
-        throw new AppError(httpStatus.INTERNAL_SERVER_ERROR, "Please try again!")
-    }
     // save image to payload
-    payload.image = image?.secure_url as string;
+    payload.image = cloudinaryResult.secure_url;
 
     const result = await Product.create(payload);
     return result;
-}
+};
 
 
 // get all product data
@@ -71,21 +63,13 @@ const getSingleProduct = async (id: string) => {
 
 
 // Update product data
-const updateProductIntoDb = async (file: any, payload: Partial<IProduct>, id: string) => {
-
+const updateProductIntoDb = async (cloudinaryResult: any, payload: Partial<IProduct>, id: string) => {
     // Checking if the product exists
     await Product.isProductExists(id);
 
-    if (file && file.path) {
-        // Get the new image name
-        const imageName = `${payload?.name?.split(' ').join('')}${Date.now()}`;
-        // Upload the new image to Cloudinary
-        const image = await sendImageToCloudinary(imageName, file.path);
-        if (!image) {
-            throw new AppError(httpStatus.INTERNAL_SERVER_ERROR, "Please try again!");
-        }
+    if (cloudinaryResult && cloudinaryResult.secure_url) {
         // Update the payload with the new image URL
-        payload.image = image?.secure_url as string;
+        payload.image = cloudinaryResult.secure_url;
     }
 
     const result = await Product.findByIdAndUpdate(id, payload, {

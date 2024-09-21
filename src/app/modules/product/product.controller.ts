@@ -7,16 +7,30 @@ import { ProductServices } from "./product.service";
 // create product controller
 const createProduct = catchAsync(async (req, res) => {
     const productData = req.body;
-    // Log the file object to see what's being received
-    const result = await ProductServices.createNewProductIntoDb(req.file, productData);
+    const cloudinaryResult = req.cloudinaryResult;
+    const result = await ProductServices.createNewProductIntoDb(cloudinaryResult, productData);
 
     sendResponse(res, {
         statusCode: httpStatus.CREATED,
         success: true,
         message: "Product created successfully",
         data: result
-    })
-})
+    });
+});
+
+// update product
+const updateProduct = catchAsync(async (req, res) => {
+    const productId = req.params.id;
+    const cloudinaryResult = req.cloudinaryResult;
+    const result = await ProductServices.updateProductIntoDb(cloudinaryResult, req.body, productId);
+
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "Product updated successfully",
+        data: result
+    });
+});
 
 
 // get all products controller
@@ -44,20 +58,6 @@ const getSingleProduct = catchAsync(async (req, res) => {
         data: result
     })
 });
-
-
-// update product
-const updateProduct = catchAsync(async (req, res) => {
-    const productId = req.params.id;
-    const result = await ProductServices.updateProductIntoDb(req.file, req.body, productId);
-
-    sendResponse(res, {
-        statusCode: httpStatus.OK,
-        success: true,
-        message: "Product updated successfully",
-        data: result
-    })
-})
 
 
 // delete product
