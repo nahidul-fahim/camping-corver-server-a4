@@ -7,7 +7,11 @@ import router from "./app/routes";
 
 // parsers
 app.use(express.json());
-app.use(cors({ origin: 'http://localhost:5173', credentials: true}));
+const allowedOrigins = ['http://localhost:5173', 'https://camping-corner.vercel.app'];
+app.use(cors({
+  origin: allowedOrigins,
+  credentials: true
+}));
 
 
 // application routes
